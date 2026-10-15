@@ -1,0 +1,99 @@
+# Форма «Питання до вимог» (мітка question) — для розробників команди. Для обох варіантів сховища (issues і docs/).
+# Мітка question зазвичай уже є серед стандартних міток GitHub; якщо її немає — PM створює її в день 0.
+# Розробники створюють питання лише через цю вебформу: без прав на запис мітку ставить саме форма, а
+# `gh issue create --label` її мовчки не поставить. Посилання на форму:
+#   https://github.com/<pm>/<team-slug>-spec/issues/new?template=question.yml
+# Поля можна передзаповнити параметрами адреси за їхніми id (requirement, ac, snapshot, question, options, recommended, impact).
+name: Питання до вимог
+description: Розробник питає PM про неоднозначну вимогу чи критерій приймання або пропонує змінити вимогу. Відповідь PM — коментарем тут; якщо змінюється поведінка, PM змінює вимогу і пише рядок у «Журнал змін».
+title: "Питання: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Одне issue — одне питання.** Назва: `Питання: AC-… — коротко про суть`.
+        - Спершу пошукайте серед issues з міткою `question`: якщо таке питання вже є — додайте коментар із новим випадком чи варіантом там.
+        - Текст можна підготувати скілом `spec-clarify` у своєму репо і вставити сюди.
+        - **Пропозицію змінити вимогу** (помилка, прогалина) оформіть так само: варіант A — ваша пропозиція, у «Вплив» — що вона змінить.
+        - Варіанти описують **поведінку** («бібліотека відхиляє резервування»), а не реалізацію («додати колонку»). PM — не технічна людина: пишіть простими словами.
+        - Issue публічне: без справжніх назв клієнта, імен людей і їхніх даних — лише терміни з «Продукт».
+  - type: input
+    id: requirement
+    attributes:
+      label: Вимога
+      description: Повна адреса issue «Вимога» або шлях до файлу `docs/requirements/…` у цьому репо.
+      placeholder: "https://github.com/<pm>/<team-slug>-spec/issues/2 або docs/requirements/01-reserve.md"
+    validations:
+      required: true
+  - type: input
+    id: ac
+    attributes:
+      label: Критерій приймання
+      description: ID критерію, якого стосується питання. Якщо питання про вимогу загалом — «—».
+      placeholder: "AC-RESERVE-02"
+    validations:
+      required: true
+  - type: input
+    id: snapshot
+    attributes:
+      label: Знімок вимог
+      description: Дата знімка, який ви читали, — з рядка «Вимоги:» у `docs/conformance.md` вашого репо. Необов'язково.
+      placeholder: "2026-10-16"
+    validations:
+      required: false
+  - type: dropdown
+    id: category
+    attributes:
+      label: Категорія
+      description: Категорія неоднозначності — таблиця з поясненнями простими словами в `docs/checklist.md` цього репо.
+      options:
+        - Функціональний обсяг
+        - Ролі й доступ
+        - Домен і модель даних
+        - Потік взаємодії (UX)
+        - Нефункціональні вимоги
+        - Інтеграції й обмеження платформи
+        - Граничні випадки й збої
+        - Обмеження й компроміси
+        - Термінологія
+        - Сигнали завершеності
+        - Заглушки й розмиті слова
+    validations:
+      required: false
+  - type: textarea
+    id: question
+    attributes:
+      label: Питання
+      description: Що саме неоднозначно і де — цитата з вимоги чи критерію.
+      placeholder: |
+        У AC-RESERVE-02 сказано «не більше 5 резервувань». Чи рахуються прострочені резервування, які ще не закрив бібліотекар?
+    validations:
+      required: true
+  - type: textarea
+    id: options
+    attributes:
+      label: Варіанти відповіді
+      description: 2–5 взаємовиключних варіантів поведінки або «коротка відповідь (до 5 слів)».
+      placeholder: |
+        A) Рахуються лише резервування «очікує видачі».
+        B) Рахуються також прострочені, поки їх не закрито.
+    validations:
+      required: true
+  - type: input
+    id: recommended
+    attributes:
+      label: Рекомендований варіант
+      description: Який варіант радите і чому — одним реченням.
+      placeholder: "A — прострочене резервування вже не тримає примірник"
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Вплив
+      description: Які критерії, тести, дані чи екрани зміняться залежно від відповіді; що ви робите, поки відповіді немає.
+      placeholder: |
+        Від відповіді залежать AC-RESERVE-02 і його тест. Поки відповіді немає — реалізую варіант A і позначаю в матриці «чекає відповіді PM».
+    validations:
+      required: true

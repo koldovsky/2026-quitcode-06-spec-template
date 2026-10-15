@@ -1,5 +1,10 @@
-# Форма «Питання до специфікації» (мітка spec-question). Мітку створює PM у день 0: форма не створює
-# відсутню мітку. Розробники створюють issues лише через вебформу (issues/new/choose): без прав на запис у це репо
-# мітку ставить саме форма, а `gh issue create --label` її мовчки не поставить.
-# Порожні issues дозволені (організаційні питання команди).
-blank_issues_enabled: true
+# Лише три форми: «Продукт» і «Вимога» (PM), «Питання до вимог» (розробники). Порожні issues вимкнено, щоб кожне
+# issue мало мітку: /requirements-sync розробників бачить вимоги саме за мітками.
+blank_issues_enabled: false
+contact_links:
+  - name: Як вести вимоги в цьому репо
+    url: https://github.com/koldovsky/2026-quitcode-06-spec-template#readme
+    about: Інструкція для PM і розробників — README шаблону вимог.
+  - name: Чекліст якості вимог
+    url: https://github.com/koldovsky/2026-quitcode-06-spec-template/blob/main/docs/checklist.md
+    about: Як перевірити вимогу перед публікацією і готовий промпт для AI-чату.
