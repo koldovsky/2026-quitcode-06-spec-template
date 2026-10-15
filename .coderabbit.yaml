@@ -1,0 +1,139 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# CodeRabbit для репо вимог PM: лише product/ і openspec/, коду немає. Кожен розробник команди забирає вимоги
+# з main у своє репо (/spec-sync), тому рецензія тут — про якість і однозначність вимог.
+# Публічні репозиторії з < 10 зірок не рецензуються автоматично — рев'ю запускає коментар `@coderabbitai review`
+# (нагадування є в шаблоні PR).
+# Усі перевірки СТАТИЧНІ (лише diff і файли репозиторію): рецензент нічого не запускає.
+# Перевірка схеми: назви custom_checks < 50 символів, tone_instructions ≤ 250 — інакше CodeRabbit
+# мовчки ігнорує ВЕСЬ файл (ознаки: рецензія англійською і знову з'являється перевірка docstrings).
+
+language: "uk-UA"
+tone_instructions: >
+  Досвідчений аналітик агенції. Українською, коротко й по суті. Шукай, що розробники прочитають по-різному:
+  розмиті слова, AC без чисел, пропущені ролі й негативні шляхи. Пропонуй конкретний новий текст вимоги.
+
+early_access: false
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: true
+  changed_files_summary: true
+  sequence_diagrams: false
+  in_progress_fortune: false
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - ".*"
+    ignore_title_keywords:
+      - "WIP"
+      - "[skip review]"
+    ignore_usernames:
+      - "dependabot[bot]"
+      - "renovate[bot]"
+      - "github-actions[bot]"
+
+  # Лише перелічені шляхи потрапляють у рецензію (явний список, без package-lock.json).
+  path_filters:
+    - "openspec/**"
+    - "product/**"
+    - "scripts/**"
+    - ".github/**"
+    - ".claude/**"
+    - ".cursor/**"
+    - "AGENTS.md"
+    - "CLAUDE.md"
+    - "README.md"
+    - ".coderabbit.yaml"
+    - ".gitignore"
+    - "package.json"
+
+  path_instructions:
+    - path: "openspec/**"
+      instructions: |
+        Специфікація OpenSpec українською з англійськими ключовими словами. Вимога — одне речення EARS із
+        SHALL або MUST; сценарії лише `#### Scenario:` (чотири решітки), назва починається з AC ID
+        `AC-<AREA>-<NN>`; один сценарій — один критерій; кроки `- **WHEN**` / `- **THEN**` / `- **AND**`;
+        декларативно, з числами, датами й кодами помилок, без кліків по UI і без назв таблиць чи API.
+        MODIFIED містить повний блок вимоги з усіма сценаріями; AC ID не перенумеровуються й не використовуються
+        повторно. proposal.md має розділи Why, What Changes, Capabilities (New / Modified, по дельті
+        specs/<capability>/spec.md на кожну), Users & roles, Non-goals, Assumptions, Open questions; Impact —
+        необов'язковий. У зміні немає design.md і tasks.md: як реалізувати, вирішує кожен розробник у своєму репо.
+        Познач розмиті слова («швидко», «зручно», «тощо»). openspec/specs змінюється лише через archive зміни
+        в тій самій гілці, не вручну.
+    - path: "product/**"
+      instructions: |
+        Продуктовий контекст PM: vision, глосарій, ролі й матриця прав, roadmap, рішення, CHANGELOG.
+        Увесь каталог розробники копіюють у свої публічні репо. Перевір анонімізацію: жодних справжніх назв
+        клієнтів, імен людей, адрес, сум; лише синтетичні дані й email `*@example.test`. Терміни глосарію
+        вживаються однаково в усіх файлах. Кожне рішення в decisions.md має формат питання → відповідь → що
+        змінилось (і посилання на issue). Кожен запис CHANGELOG.md має дату й перелік ADDED / MODIFIED / REMOVED
+        з AC ID.
+    - path: "scripts/**"
+      instructions: |
+        Node-скрипти без зайвих залежностей. Значення з локального denylist і секрету SPEC_DENYLIST ніколи не
+        друкуються. Помилки дають ненульовий код виходу й зрозуміле повідомлення українською.
+
+  pre_merge_checks:
+    docstrings:
+      mode: "off"
+    title:
+      mode: "off"
+    description:
+      mode: "warning"
+    custom_checks:
+      - mode: "warning"
+        name: "Межі PR: лише product/ і openspec/"
+        instructions: >
+          Static review of the diff and PR description only; do NOT run anything. Unless the PR is a
+          template update (checkbox "Оновлення шаблону" in the description or branch template/*, which
+          cherry-picks course-template commits and may change any path), the diff touches only
+          product/** and openspec/** (including openspec/changes/archive/**). Inside a change folder
+          openspec/changes/<id>/ only proposal.md, .openspec.yaml and specs/** are allowed: FAIL if
+          design.md or tasks.md is added, because each developer plans the implementation in their own
+          repo. FAIL if the diff crosses these boundaries, naming each offending path; answer in Ukrainian.
+
+      - mode: "warning"
+        name: "Archive і запис у CHANGELOG"
+        instructions: >
+          Static review only. Developers pull only product/** and openspec/specs/** from main, never
+          active changes. If the diff changes openspec/specs/** (an archive), check that
+          product/CHANGELOG.md gets a new dated entry listing the change id and the ADDED, MODIFIED and
+          REMOVED AC IDs that match the spec diff. If the diff adds or edits an active change under
+          openspec/changes/<id>/ (not archive/) and does not archive it, PASS but remind in Ukrainian
+          that the PM must run "npx openspec archive <id> -y" in this branch before merge. FAIL only if
+          openspec/specs/** changed without a matching CHANGELOG entry, or openspec/specs/** was edited
+          by hand (requirement text that no archived change in this diff contains). Answer in Ukrainian.
+
+      - mode: "warning"
+        name: "Якість специфікації OpenSpec"
+        instructions: >
+          Static review of changed files under openspec/** only; PASS if none changed. Each
+          requirement is one EARS sentence with English SHALL or MUST; each "#### Scenario:" title
+          starts with an AC ID (AC-AREA-NN) and covers exactly one criterion; scenarios are
+          declarative with concrete numbers, dates or error codes, without UI click steps or table
+          and API names; a changed AC keeps its ID under MODIFIED with the full requirement block,
+          and no AC ID is reused or renumbered; proposal.md has Why, What Changes, Capabilities
+          (New/Modified, one delta spec per listed capability), Users & roles, Non-goals,
+          Assumptions and Open questions (Impact is optional). List each violation with file and
+          line. Separately, as a note that does not fail the check, name requirements without a
+          negative scenario (invalid data or another user's data). Answer in Ukrainian.
+
+      - mode: "warning"
+        name: "Анонімізація й синтетичні дані"
+        instructions: >
+          Static review of the diff only. This repository is public and developers copy product/**
+          into their own public repos. FAIL if any committed file contains what looks like a real
+          client or company name, a real person's name, address, phone number or money amount
+          taken from a real deal, personal data that is not synthetic (emails must be
+          *@example.test), a committed product/denylist.local* file, or a real-looking key or token.
+          Generic roles and neutral placeholders are fine. Answer in Ukrainian.
+
+chat:
+  auto_reply: true

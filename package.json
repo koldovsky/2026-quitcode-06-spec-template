@@ -1,0 +1,16 @@
+{
+  "name": "2026-quitcode-06-spec-template",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "spec:validate": "openspec validate --all --strict",
+    "spec:check": "node scripts/check-spec.mjs"
+  },
+  "devDependencies": {
+    "@fission-ai/openspec": "1.14.1"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}

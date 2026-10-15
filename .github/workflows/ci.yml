@@ -1,0 +1,41 @@
+# CI репо вимог PM. Один job — spec:
+#   spec — структура специфікацій (openspec validate --strict) + AC ID, унікальність, розділи proposal.md, denylist.
+# Ruleset у цьому репо не потрібен: CI показує в PR, чи готові вимоги до merge; рев'ю — CodeRabbit (порадник).
+# Розробники забирають вимоги з main (/spec-sync), тож у main зливайте лише PR із зеленим spec.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Новий push у PR скасовує застарілий прогін цього PR; прогони main не скасовуються.
+concurrency:
+  group: ci-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  OPENSPEC_TELEMETRY: "0"
+
+jobs:
+  spec:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: OpenSpec validate --all --strict
+        run: npm run spec:validate
+      - name: AC IDs, uniqueness, proposal sections, denylist
+        run: npm run spec:check
+        env:
+          # Необов'язковий секрет репозиторію: справжні назви клієнтів через кому (у публічному репо — не у файлі).
+          # PR-и з гілок цього ж репозиторію його отримують (PR-и з форків і від Dependabot — ні).
+          SPEC_DENYLIST: ${{ secrets.SPEC_DENYLIST }}
