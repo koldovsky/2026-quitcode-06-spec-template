@@ -3,7 +3,7 @@
 <!-- Що змінює PR — залиште один варіант. Межі змін перевіряє CodeRabbit (перевірка «Межі PR: лише product/ і openspec/»). -->
 - [ ] **Нова зміна вимог** — гілка `spec/<id>`: `openspec/changes/<id>/` (`proposal.md` + `specs/`), після archive —
   `openspec/specs/` і `openspec/changes/archive/`, запис у `product/CHANGELOG.md`
-- [ ] **Продуктовий контекст** — гілка `product/context`: лише `product/`
+- [ ] **Продуктовий контекст** — гілка `product/context`: `product/` і рядок `Продукт:` в `openspec/config.yaml`
 - [ ] **Оновлення шаблону** — гілка `template/<коротко>`: `git cherry-pick` коміту шаблону курсу (README, «Оновлення шаблону»)
 
 Closes #
@@ -33,7 +33,7 @@ Closes #
 
 ## Чекліст
 
-- [ ] PR змінює лише `product/` і `openspec/`; у зміні немає `design.md` і `tasks.md`
+- [ ] PR змінює лише `product/` і `openspec/` (крім «Оновлення шаблону»); у зміні немає `design.md` і `tasks.md`
 - [ ] `npm run spec:validate` і `npm run spec:check` зелені; скіл `spec-review` запущено, блокерів 0, розділ `## spec-review` заповнено
 - [ ] AC ID стабільні: змінений AC зберіг ID (MODIFIED), прибраний — у REMOVED з причиною, старі ID не перевикористано
 - [ ] Відповіді на питання — у коментарях issues і в `product/decisions.md`

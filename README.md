@@ -160,8 +160,9 @@
 ## Як цей шаблон зібрано
 
 Повторюваний рецепт (Git Bash / macOS / Linux; Node 24, npm 11) — щоб оновити шаблон на нові версії або зібрати його
-заново. Файли, написані вручну, беруться з
-[шаблону проєкту](https://github.com/koldovsky/2026-quitcode-06-project-template) й адаптуються під репо вимог.
+заново. Скрипт перевірки, `.cursorignore` і `.gitattributes` беруться з
+[шаблону проєкту](https://github.com/koldovsky/2026-quitcode-06-project-template) й адаптуються під репо вимог; решта
+файлів, написаних вручну, ведеться в цьому репо (крок 3).
 
 ```bash
 mkdir 2026-quitcode-06-spec-template && cd 2026-quitcode-06-spec-template
@@ -181,11 +182,14 @@ npx openspec update
 # openspec/config.yaml: context + rules (кожен пункт у лапках; design і tasks — «пропусти цей артефакт»);
 # порожні openspec/specs, openspec/changes, openspec/changes/archive з .gitkeep
 
-# 3. Перенести з шаблону проєкту й адаптувати під PM:
-#   scripts/check-spec.mjs + scripts/lib/spec-lib.mjs (лише те, що імпортує check-spec), product/**,
-#   .claude/settings.json (лише deny .env* і product/denylist.local*), .claude/skills/spec-review/** (+ таксономія
-#   неоднозначностей у references/), .cursorignore, .github/** (форма питань, шаблон PR, ci.yml з job spec),
-#   .coderabbit.yaml, AGENTS.md, CLAUDE.md, .gitignore, .gitattributes, LICENSE
+# 3. Файли, написані вручну.
+#   З шаблону проєкту — перенести й адаптувати під PM: scripts/check-spec.mjs + scripts/lib/spec-lib.mjs (лише те,
+#   що імпортує check-spec), .cursorignore, .gitattributes.
+#   Решта ведеться в цьому репо: product/**, .claude/settings.json (лише deny .env* і product/denylist.local*),
+#   .claude/skills/spec-review/** (+ таксономія неоднозначностей у references/), .github/** (форма питань, шаблон PR,
+#   ci.yml з job spec), .coderabbit.yaml, AGENTS.md, CLAUDE.md, .gitignore, LICENSE. Щоб зібрати шаблон заново —
+#   візьміть їх із попередньої версії цього шаблону (або з шаблону проєкту на коміті 3c6ca33; таксономія там —
+#   у .claude/skills/spec-clarify/references/ambiguity-taxonomy.md) і адаптуйте.
 
 # 4. Перевірити
 npm ci && npm run spec:validate && npm run spec:check
