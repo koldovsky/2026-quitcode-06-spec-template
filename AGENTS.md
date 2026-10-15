@@ -26,7 +26,8 @@
 - `.claude/skills/spec-review/` — рев'ю зміни перед merge (Cursor читає цю ж теку). `openspec-*` і `/opsx*` у `.claude/`
   та `.cursor/` згенерував OpenSpec (однакові копії для двох інструментів) — вручну не редагуй. Тут лише
   propose, explore, update, sync, archive: `/opsx:apply` і `/opsx:verify` у цьому репо немає (реалізація — у репо
-  розробників), тож підказку «run `/opsx:apply`» наприкінці `/opsx:propose` ігноруй.
+  розробників), тож підказки про apply і tasks наприкінці `/opsx:propose` (`openspec instructions apply …`,
+  «ask me to apply this change») ігноруй.
 
 ## Процес
 

@@ -16,7 +16,8 @@
 //      їх ховає, але spec:check їх не читає);
 //   5) у кожній зміні (openspec/changes/<id> і archive/<id>) є proposal.md з розділами Why, What Changes,
 //      Capabilities, Users & roles, Non-goals, Assumptions, Open questions у цьому порядку (інші розділи,
-//      як-от Impact, — між ними чи після них).
+//      як-от Impact, — між ними чи після них). Зміна реалізації розробника (skip_specs: true) — теж помилка,
+//      з підказкою видалити теку: у репо вимог таких змін немає.
 // Код виходу: 0 — усе гаразд, 1 — є помилки.
 import { existsSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
@@ -278,8 +279,14 @@ for (const dir of [changesDir, path.join(changesDir, "archive")]) {
       else pos = i + 1;
     }
     if (gap) {
+      // Зміна реалізації розробника (skip_specs: true; перенесена зі старого репо команди) — їй тут не місце.
+      const meta = path.join(full, ".openspec.yaml");
+      const implHint =
+        existsSync(meta) && /^skip_specs:\s*true\b/m.test(readText(meta))
+          ? " — це зміна реалізації розробника (skip_specs: true): у репо вимог її немає, видаліть теку"
+          : "";
       errors.proposal.push(
-        `${rel(full)} — бракує ${gap} (порядок: Why, What Changes, Capabilities, Users & roles, Non-goals, Assumptions, Open questions)`,
+        `${rel(full)} — бракує ${gap} (порядок: Why, What Changes, Capabilities, Users & roles, Non-goals, Assumptions, Open questions)${implHint}`,
       );
     }
   }
